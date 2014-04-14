@@ -32,10 +32,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
@@ -50,7 +47,7 @@ public class VerifySignature {
 
     }
 
-    public static void validate(String signatureFileName) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, XMLSecurityException {
+    public static void validate_file(String signatureFileName) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, XMLSecurityException {
 
         boolean schemaValidate = false;
         final String signatureSchemaFile = "xmldsig-core-schema.xsd";
@@ -113,6 +110,42 @@ public class VerifySignature {
 
         validate(doc);
     }
+
+    public static boolean validate(String xml) throws XPathExpressionException, XMLSecurityException, IOException, ParserConfigurationException, SAXException {
+
+
+        boolean schemaValidate = false;
+
+        javax.xml.parsers.DocumentBuilderFactory dbf =
+                javax.xml.parsers.DocumentBuilderFactory.newInstance();
+
+        if (schemaValidate) {
+            System.out.println("We do schema-validation");
+        }
+
+        if (schemaValidate) {
+            dbf.setAttribute("http://apache.org/xml/features/validation/schema",
+                    Boolean.TRUE);
+            dbf.setAttribute("http://apache.org/xml/features/dom/defer-node-expansion",
+                    Boolean.TRUE);
+            dbf.setValidating(true);
+            dbf.setAttribute("http://xml.org/sax/features/validation",
+                    Boolean.TRUE);
+        }
+
+        dbf.setNamespaceAware(true);
+        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
+
+        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
+
+        InputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+        Document doc = db.parse(stream);
+
+        return validate(doc);
+
+    }
+
+
     public static boolean validate(Document doc) throws XPathExpressionException, XMLSecurityException {
         XPathFactory xpf = XPathFactory.newInstance();
         XPath xpath = xpf.newXPath();

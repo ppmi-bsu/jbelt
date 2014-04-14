@@ -19,6 +19,7 @@
 package by.bsu.belt.xml;
 
 import by.bsu.belt.provider.Bee2SecurityProvider;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.algorithms.SignatureAlgorithm;
 import org.apache.xml.security.exceptions.AlgorithmAlreadyRegisteredException;
@@ -228,12 +229,9 @@ public class CreateBeeSignature {
     }
 
     public static String convertToString(Document doc) throws TransformerException {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        StringWriter writer = new StringWriter();
-        transformer.transform(new DOMSource(doc), new StreamResult(writer));
-        String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
-        return output;
+        ByteOutputStream stream = new ByteOutputStream();
+        XMLUtils.outputDOMc14nWithComments(doc, stream);
+
+        return stream.toString();
     }
 }
