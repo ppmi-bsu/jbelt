@@ -27,13 +27,13 @@ public class BignSignature extends Signature {
     @Override
     public void engineInitVerify(PublicKey publicKey) throws InvalidKeyException {
         this.state = VERIFY;
-        this.pubKey = (BignKey)publicKey;
+        this.pubKey = new BignPublicKey(((BignPublicKey)publicKey).bytes);
     }
 
     @Override
     public void engineInitSign(PrivateKey privateKey) throws InvalidKeyException {
         this.state = SIGN;
-        this.privKey = (BignKey) privateKey;
+        this.privKey = new BignPrivateKey(((BignPrivateKey) privateKey).bytes);
     }
 
     @Override
@@ -51,9 +51,15 @@ public class BignSignature extends Signature {
     @Override
     public byte[] engineSign() throws SignatureException {
 
-        byte[] sig = new byte[(privKey.bignParams.l * 3)/4];
+        byte[] sig = new byte[(privKey.bignParams.l * 3)/8];
 
-        bee2.bignSign(sig, privKey.bignParams, "1.2.112.0.2.0.34.101.31.81", Util.bytes(data), privKey.bytes, rng, null);
+
+
+        bee2.bignSign(sig,
+                privKey.bignParams,
+                "1.2.112.0.2.0.34.101.31.81",
+                new BeltMessageDigest().digest(Util.bytes(data)),
+                privKey.bytes, rng, null);
 
         return sig;
     }
@@ -63,7 +69,11 @@ public class BignSignature extends Signature {
 
         assert this.pubKey != null;
 
-        int res = bee2.bignVerify(pubKey.bignParams, "1.2.112.0.2.0.34.101.31.81", Util.bytes(data), sigBytes, pubKey.bytes);
+        int res = bee2.bignVerify(pubKey.bignParams,
+                "1.2.112.0.2.0.34.101.31.81",
+                new BeltMessageDigest().digest(Util.bytes(data)),
+                sigBytes,
+                pubKey.bytes);
 
         return res==0;
 

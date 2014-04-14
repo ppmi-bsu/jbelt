@@ -22,32 +22,48 @@ public class BignSignatureAlgorithmSpi extends SignatureAlgorithmSpi {
 
     @Override
     protected String engineGetURI() {
-        return "uri:BignSignature";
+        return "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt";
     }
 
     @Override
     protected String engineGetJCEAlgorithmString() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "BignSign";  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     protected String engineGetJCEProviderName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return "Bee2";  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     protected void engineUpdate(byte[] input) throws XMLSignatureException {
+
+        try {
+            signatureAlgorithm.update(input);
+        } catch (SignatureException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     protected void engineUpdate(byte input) throws XMLSignatureException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            signatureAlgorithm.update(input);
+        } catch (SignatureException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
     }
 
     @Override
     protected void engineUpdate(byte[] buf, int offset, int len) throws XMLSignatureException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            signatureAlgorithm.update(buf, offset, len);
+        } catch (SignatureException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
     }
 
     @Override

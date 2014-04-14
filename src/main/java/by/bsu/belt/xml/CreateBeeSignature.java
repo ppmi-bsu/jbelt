@@ -71,16 +71,16 @@ public class CreateBeeSignature {
 
 
         JCEMapper.register(
-                "uri:Belt",
+                "urn:oid:1.2.112.0.2.0.34.101.31.81-belt",
                 new JCEMapper.Algorithm("", "Belt", "MessageDigest")
         );
         JCEMapper.register(
-                "uri:BignSignature",
+                "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt",
                 new JCEMapper.Algorithm("", "BignSign", "Signature")
         );
 
         try {
-            SignatureAlgorithm.register("uri:BignSignature", BignSignatureAlgorithmSpi.class);
+            SignatureAlgorithm.register("urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt", BignSignatureAlgorithmSpi.class);
         } catch (AlgorithmAlreadyRegisteredException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
@@ -106,7 +106,7 @@ public class CreateBeeSignature {
     }
     public static Document sign(Document doc, String output) throws Exception{
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("Bign");
-        keyPairGenerator.initialize(1024);
+        keyPairGenerator.initialize(128);
         KeyPair keys = keyPairGenerator.generateKeyPair();
         return sign(doc, output, keys);
     }
@@ -120,7 +120,7 @@ public class CreateBeeSignature {
         //Create an XML Signature object from the document, BaseURI and
         //signature algorithm (in this case DSA)
         XMLSignature sig =
-                new XMLSignature(doc, BaseURI, "uri:BignSignature");
+                new XMLSignature(doc, BaseURI, "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt");
         sig.addResourceResolver(new OfflineResolver());
 
 
@@ -133,10 +133,6 @@ public class CreateBeeSignature {
         //Note that they can be mixed in 1 signature with seperate references as
         //shown below.
         doc.getDocumentElement().appendChild(sig.getElement());
-        doc.appendChild(doc.createComment(" Comment after "));
-        //sig.getSignedInfo().addResourceResolver(
-        //    new org.apache.xml.security.samples.utils.resolver.OfflineResolver()
-        //);
 
         {
             //create the transforms object for the Document/Reference
@@ -152,7 +148,7 @@ public class CreateBeeSignature {
             //Add the above Document/Reference
 
 
-            sig.addDocument("", transforms, "uri:Belt");
+            sig.addDocument("", transforms, "urn:oid:1.2.112.0.2.0.34.101.31.81-belt");
         }
 
         {
@@ -162,8 +158,9 @@ public class CreateBeeSignature {
             // not really, as we use the OfflineResolver which acts as a proxy for
             // these two resouces ;-))
             //
-            sig.addDocument("http://www.w3.org/TR/xml-stylesheet");
+            /*sig.addDocument("http://www.w3.org/TR/xml-stylesheet");
             sig.addDocument("http://www.nue.et-inf.uni-siegen.de/index.html");
+            */
         }
 
         {

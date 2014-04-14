@@ -19,6 +19,7 @@ public class BignKeyPairGenerator  extends KeyPairGenerator {
 
 	public BignKeyPairGenerator() {
 		super("Bign");
+        initialize(128);
 	}
 
 	public void initialize(int level, SecureRandom sr) {

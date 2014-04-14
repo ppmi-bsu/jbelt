@@ -59,7 +59,7 @@ public class BignKeyValue extends KeyValue {
 
         public PublicKey getPublicKey() throws XMLSecurityException {
             BignPublicKey key = new BignPublicKey();
-            key.bytes = this.getBytesFromTextChild();
+            key.setBytes(this.getBytesFromChildElement("PublicKey", "http://www.w3.org/2000/09/xmldsig#"));
             return key;
         }
 
@@ -68,8 +68,8 @@ public class BignKeyValue extends KeyValue {
             super(doc);
 
             if (key instanceof BignPublicKey) {
-                this.addBase64Text(((BignPublicKey) key).bytes);
-
+                XMLUtils.addReturnToElement(this.constructionElement);
+                this.addBase64Element(((BignPublicKey) key).bytes, "PublicKey");
             }else {
                 throw new IllegalArgumentException();
             }

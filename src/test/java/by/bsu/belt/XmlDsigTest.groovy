@@ -1,5 +1,7 @@
 package by.bsu.belt
 
+import by.bsu.belt.provider.BignKeyPairGenerator
+import by.bsu.belt.xml.BXS
 import by.bsu.belt.xml.CreateBeeSignature
 import by.bsu.belt.xml.VerifySignature
 import junit.framework.TestCase
@@ -44,6 +46,16 @@ class XmlDsigTest extends TestCase{
 
         assertTrue(VerifySignature.validate(xml))
 
+    }
+
+    def test_BXS() {
+        def bxs = new BXS()
+        assertTrue(bxs.verify(bxs.sign(xml_string)))
+    }
+
+    def test_with_keys() {
+        def bxs = new BXS()
+        assertTrue(bxs.verify(bxs.sign(xml_string, new BignKeyPairGenerator().generateKeyPair())))
     }
 
 

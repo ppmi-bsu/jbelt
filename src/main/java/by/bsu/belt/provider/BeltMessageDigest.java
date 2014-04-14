@@ -37,7 +37,9 @@ public class BeltMessageDigest extends MessageDigest implements Cloneable {
 
         Bee2Library bee2 = Bee2Library.INSTANCE;
         byte[] hash = new byte[32];
-        bee2.beltHash(hash, new String(bytes), bytes.length);
+        int res = bee2.beltHash(hash, new String(bytes), bytes.length);
+        if(res!=0)
+            throw new RuntimeException("Belt hash was broken");
         return hash;
     }
 
