@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class BignSignature extends Signature {
 
     Bee2Library bee2 = Bee2Library.INSTANCE;
-    BignParams bignParams = new BignParams();
+    BignParams bignParams = new BignParams(bee2, 128);
     Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
 
     public BignSignature() {

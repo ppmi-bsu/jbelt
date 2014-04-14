@@ -19,6 +19,23 @@ public class BignParams extends Structure implements Structure.ByReference {
     public byte[] yG = new byte[64];	/*!< y-координата точки G */
     public byte[] seed = new byte[8];  /*!< параметр seed */
 
-    public BignParams() {
+    public BignParams(Bee2Library bee2, int l) {
+        String curve_name = null;
+        switch (l) {
+            case 128:
+                curve_name = "1.2.112.0.2.0.34.101.45.3.1"; break;
+            case 192:
+                curve_name = "1.2.112.0.2.0.34.101.45.3.2"; break;
+            case 256:
+                curve_name = "1.2.112.0.2.0.34.101.45.3.3"; break;
+            default:
+                throw new IllegalArgumentException("Level " + l + "is invalid");
+        }
+
+        int res = bee2.bignStdParams(this, curve_name);
+        if (res!=0)
+            throw new RuntimeException("Params were not loaded, code is " + res);
+
     }
+
 }
