@@ -12,7 +12,7 @@ import java.util.Random;
  * Time: 2:52 PM
  * To change this template use File | Settings | File Templates.
  */
-interface Bee2Library extends Library {
+public interface Bee2Library extends Library {
     Bee2Library INSTANCE = (Bee2Library) Native.loadLibrary("bee2", Bee2Library.class);
 
     public interface IRngFunction extends Callback {
@@ -21,7 +21,6 @@ interface Bee2Library extends Library {
 
     public class RngFunc implements IRngFunction{
 
-        @Override
         public void invoke(PointerByReference buf, int count, PointerByReference stack) {
 
 
@@ -56,11 +55,5 @@ interface Bee2Library extends Library {
             byte[] sig,			/*!< [in] подпись */
             byte[] pubkey			/*!< [in] открытый ключ */
     );
-
-}
-
-
-
-public class Bee2 {
 
 }
