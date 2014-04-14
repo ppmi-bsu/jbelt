@@ -100,7 +100,7 @@ public class CreateBeeSignature {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("Bign");
         keyPairGenerator.initialize(1024);
         KeyPair keys = keyPairGenerator.generateKeyPair();
-        return sign(doc, output);
+        return sign(doc, output, keys);
     }
 
     public static Document sign(Document doc, String output, KeyPair keys) throws Exception{
