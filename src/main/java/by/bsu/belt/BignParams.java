@@ -21,6 +21,18 @@ public class BignParams extends Structure implements Structure.ByReference {
 
     public BignParams(int level) {
         String curve_name = null;
+        curve_name = getCurveName(level);
+
+        int res = Bee2Library.INSTANCE.bignStdParams(this, curve_name);
+        if (res!=0)
+            throw new RuntimeException("Params were not loaded, code is " + res);
+
+        assert is_valid(this);
+
+    }
+
+    public static String getCurveName(int level) {
+        String curve_name;
         switch (level) {
             case 128:
                 curve_name = "1.2.112.0.2.0.34.101.45.3.1"; break;
@@ -31,13 +43,7 @@ public class BignParams extends Structure implements Structure.ByReference {
             default:
                 throw new IllegalArgumentException("Level " + level + "is invalid");
         }
-
-        int res = Bee2Library.INSTANCE.bignStdParams(this, curve_name);
-        if (res!=0)
-            throw new RuntimeException("Params were not loaded, code is " + res);
-
-        assert is_valid(this);
-
+        return curve_name;
     }
 
     public static boolean is_valid(BignParams bignParams) {

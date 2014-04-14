@@ -1,5 +1,6 @@
 package by.bsu.belt.xml;
 
+import by.bsu.belt.BignParams;
 import by.bsu.belt.provider.BignKey;
 import by.bsu.belt.provider.BignPublicKey;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -70,6 +71,7 @@ public class BignKeyValue extends KeyValue {
             if (key instanceof BignPublicKey) {
                 XMLUtils.addReturnToElement(this.constructionElement);
                 this.addBase64Element(((BignPublicKey) key).bytes, "PublicKey");
+                this.addTextElement(BignParams.getCurveName(((BignPublicKey) key).bignParams.l),"NamedCurve");
             }else {
                 throw new IllegalArgumentException();
             }

@@ -144,7 +144,7 @@ public class CreateBeeSignature {
             //Part of the signature element needs to be canonicalized. It is a kind
             //of normalizing algorithm for XML. For more information please take a
             //look at the W3C XML Digital Signature webpage.
-            transforms.addTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+            transforms.addTransform(Transforms.TRANSFORM_C14N_OMIT_COMMENTS);
             //Add the above Document/Reference
 
 

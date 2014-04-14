@@ -11,8 +11,75 @@ import junit.framework.TestCase
  * Date: 4/13/14
  * Time: 7:04 PM
  */
-class XmlDsigTest extends TestCase{
 
+
+
+
+class XmlDsigTest extends TestCase{
+    def test_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jbelt</groupId>
+    <artifactId>jbelt</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.46</version>
+        </dependency>
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython</artifactId>
+            <version>2.5.4-rc1</version>
+        </dependency>
+         <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+         <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+'''
 
     def xml_string = '''<?xml version="1.0" encoding="UTF-8"?>
         <PurchaseOrder>
@@ -41,19 +108,20 @@ class XmlDsigTest extends TestCase{
     }
 
     public void test_strings() {
-        def xml = CreateBeeSignature.convertToString(CreateBeeSignature.sign(xml_string, 'apache_signed_test.xml'))
+        def xml = CreateBeeSignature.convertToString(CreateBeeSignature.sign(test_xml, 'apache_signed_test.xml'))
         System.out.println(xml)
 
         assertTrue(VerifySignature.validate(xml))
 
     }
 
-    def test_BXS() {
+    public void test_BXS() {
         def bxs = new BXS()
         assertTrue(bxs.verify(bxs.sign(xml_string)))
+        assertTrue(bxs.verify(bxs.sign(test_xml)))
     }
 
-    def test_with_keys() {
+    public void test_with_keys() {
         def bxs = new BXS()
         assertTrue(bxs.verify(bxs.sign(xml_string, new BignKeyPairGenerator().generateKeyPair())))
     }
