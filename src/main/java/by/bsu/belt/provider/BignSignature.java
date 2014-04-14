@@ -1,7 +1,6 @@
 package by.bsu.belt.provider;
 
 import by.bsu.belt.Bee2Library;
-import by.bsu.belt.BignParams;
 
 import java.security.*;
 import java.util.ArrayList;
@@ -14,15 +13,10 @@ import java.util.ArrayList;
 public class BignSignature extends Signature {
 
     Bee2Library bee2 = Bee2Library.INSTANCE;
-    BignParams bignParams = new BignParams(bee2, 128);
     Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
 
     public BignSignature() {
         super("BignSign");
-
-        bee2.bignStdParams(bignParams, "1.2.112.0.2.0.34.101.45.3.1");
-//        assert bignParams.l == 128;
-        assert bee2.bignValParams(bignParams) == 0;
     }
 
     BignKey privKey = null;
@@ -34,10 +28,6 @@ public class BignSignature extends Signature {
     public void engineInitVerify(PublicKey publicKey) throws InvalidKeyException {
         this.state = VERIFY;
         this.pubKey = (BignKey)publicKey;
-        assert bee2.bignValPubkey(bignParams, pubKey.bytes) == 0;
-
-
-
     }
 
     @Override
@@ -61,9 +51,9 @@ public class BignSignature extends Signature {
     @Override
     public byte[] engineSign() throws SignatureException {
 
-        byte[] sig = new byte[64 + 32];
+        byte[] sig = new byte[(privKey.bignParams.l * 3)/4];
 
-        bee2.bignSign(sig, bignParams, "1.2.112.0.2.0.34.101.31.81", Util.bytes(data), privKey.bytes, rng, null);
+        bee2.bignSign(sig, privKey.bignParams, "1.2.112.0.2.0.34.101.31.81", Util.bytes(data), privKey.bytes, rng, null);
 
         return sig;
     }
@@ -73,7 +63,7 @@ public class BignSignature extends Signature {
 
         assert this.pubKey != null;
 
-        int res = bee2.bignVerify(bignParams, "1.2.112.0.2.0.34.101.31.81", Util.bytes(data), sigBytes, pubKey.bytes);
+        int res = bee2.bignVerify(pubKey.bignParams, "1.2.112.0.2.0.34.101.31.81", Util.bytes(data), sigBytes, pubKey.bytes);
 
         return res==0;
 

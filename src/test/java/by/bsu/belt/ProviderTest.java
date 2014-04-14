@@ -1,7 +1,6 @@
 package by.bsu.belt;
 
-import by.bsu.belt.provider.Bee2SecurityProvider;
-import by.bsu.belt.provider.BignKey;
+import by.bsu.belt.provider.*;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -57,7 +56,7 @@ public class ProviderTest
         };*/
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("Bign");
-        keyPairGenerator.initialize(0);
+        keyPairGenerator.initialize(128);
         KeyPair keys = keyPairGenerator.generateKeyPair();
 
         int[] message_int = {
@@ -100,5 +99,19 @@ public class ProviderTest
         signature2.initVerify(keys.getPublic());
         signature2.update(hash);
         assertTrue(signature2.verify(sigBytes));
+    }
+
+    public void test_keys() {
+
+        BignKeyPairGenerator gen = new BignKeyPairGenerator();
+        gen.initialize(128);
+        KeyPair keys = gen.generateKeyPair();
+        assertTrue(BignKeyPairGenerator.isValid((BignPublicKey) keys.getPublic()));
+
+        assertEquals(keys.getPublic(), BignKeyPairGenerator.calcKeyPair((BignPrivateKey) keys.getPrivate()).getPublic());
+
+        assertEquals(keys.getPrivate(), BignKeyPairGenerator.calcKeyPair(((BignPrivateKey) keys.getPrivate()).bytes).getPrivate());
+        assertEquals(keys.getPublic(), BignKeyPairGenerator.calcKeyPair(((BignPrivateKey) keys.getPrivate()).bytes).getPublic());
+
     }
 }

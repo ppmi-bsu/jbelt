@@ -6,6 +6,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
@@ -35,19 +36,48 @@ public class AppTest
     /**
      * Rigourous Test :-)
      */
+    public void testKeysBee2() {
+        Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
+        Bee2Library bee2 = Bee2Library.INSTANCE;
+
+
+        int level = 128;
+        BignParams bignParams = new BignParams(level);
+        assertEquals(bignParams.l, level);
+        assertTrue(BignParams.is_valid(bignParams));
+
+        byte[] privKey = new byte[level/4];
+        byte[] pubKey = new byte[level/2];
+
+        assertEquals(bee2.bignGenKeypair(privKey, pubKey, bignParams, rng, null), 0);
+        assertEquals(bee2.bignValPubkey(bignParams, pubKey), 0);
+
+        byte[] calcPubKey = new byte[level/2];
+
+        bee2.bignCalcPubkey(calcPubKey, bignParams, privKey);
+        System.out.println(Arrays.toString(pubKey));
+        System.out.println(Arrays.toString(calcPubKey));
+
+
+        assertEquals(new BigInteger(calcPubKey), new BigInteger(pubKey));
+
+
+
+    }
+
     public void testBee2()
     {
         Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
         Bee2Library bee2 = Bee2Library.INSTANCE;
         assertNotNull(bee2);
         int[] levels = { 128};
-        for(int l: levels ) {
-            BignParams bignParams = new BignParams(bee2, l);
-            assertEquals(bignParams.l, l);
-            assertEquals(bee2.bignValParams(bignParams), 0);
+        for(int level: levels ) {
+            BignParams bignParams = new BignParams(level);
+            assertEquals(bignParams.l, level);
+            assertTrue(BignParams.is_valid(bignParams));
 
-            byte[] privKey = new byte[l/4];
-            byte[] pubKey = new byte[l/2];
+            byte[] privKey = new byte[level/4];
+            byte[] pubKey = new byte[level/2];
 
             assertEquals(bee2.bignGenKeypair(privKey, pubKey, bignParams, rng, null), 0);
             assertEquals(bee2.bignValPubkey(bignParams, pubKey), 0);
@@ -57,7 +87,7 @@ public class AppTest
             System.out.println(Arrays.toString(hash));
 
 
-            byte[] sig = new byte[48];
+            byte[] sig = new byte[level/2 + level/4];
             assertEquals(
                     bee2.bignSign(sig, bignParams, "1.2.112.0.2.0.34.101.31.81", hash, privKey, rng, null),
                     0

@@ -14,35 +14,56 @@ public class BignKeyPairGenerator  extends KeyPairGenerator {
 	SecureRandom random;
 
     Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
-    Bee2Library bee2 = Bee2Library.INSTANCE;
 
-    BignParams bignParams = new BignParams(bee2, 128);
+    BignParams bignParams;
 
 	public BignKeyPairGenerator() {
 		super("Bign");
 	}
 
-	public void initialize(int strength, SecureRandom sr) {
+	public void initialize(int level, SecureRandom sr) {
 		random = sr;
-        bee2.bignStdParams(bignParams, "1.2.112.0.2.0.34.101.45.3.1");
-        assert bee2.bignValParams(bignParams) == 0;
-
+        bignParams = new BignParams(level);
     }
 
 	public KeyPair generateKeyPair() {
-        assert bee2.bignValParams(bignParams) == 0;
+        assert BignParams.is_valid(bignParams);
 
-        byte[] privKey = new byte[32];
-        byte[] pubKey = new byte[64];
+        byte[] privKey = new byte[bignParams.l/4];
+        byte[] pubKey = new byte[bignParams.l/2];
 
-        bee2.bignGenKeypair(privKey, pubKey, bignParams, rng, null);
+        Bee2Library.INSTANCE.bignGenKeypair(privKey, pubKey, bignParams, rng, null);
 
-        assert bee2.bignValPubkey(bignParams, pubKey) == 0;
 
-        BignPublicKey pub = new BignPublicKey()   ;
+
+        BignPublicKey pub = new BignPublicKey();
         BignPrivateKey priv = new BignPrivateKey() ;
-		pub.bytes = pubKey;
-		priv.bytes = privKey;
+		pub.setBytes(pubKey);
+		priv.setBytes(privKey);
+
+        assert isValid(pub);
+
 		return new KeyPair(pub, priv);
 	}
+
+    public static boolean isValid(BignPublicKey pubKey) {
+        return Bee2Library.INSTANCE.bignValPubkey(pubKey.bignParams, pubKey.bytes) == 0;
+    }
+
+    public static KeyPair calcKeyPair(byte[] privateKeyBytes) {
+
+        BignPrivateKey priv = new BignPrivateKey(privateKeyBytes);
+        return calcKeyPair(priv);
+
+    }
+
+    public static KeyPair calcKeyPair(BignPrivateKey privateKey) {
+        byte[] calcPubKey = new byte[privateKey.bignParams.l / 2];
+
+        Bee2Library.INSTANCE.bignCalcPubkey(calcPubKey, privateKey.bignParams, privateKey.bytes);
+
+        BignPublicKey publicKey = new BignPublicKey(calcPubKey);
+        assert isValid(publicKey);
+        return new KeyPair(publicKey, privateKey);
+    }
 }

@@ -56,4 +56,10 @@ public interface Bee2Library extends Library {
             byte[] pubkey			/*!< [in] открытый ключ */
     );
 
+    int bignCalcPubkey(
+            byte[] pubkey,				/*!< [out] открытый ключ */
+            BignParams params,	/*!< [in] долговременные параметры */
+            byte[] privkey		/*!< [in] личный ключ */
+    );
+
 }

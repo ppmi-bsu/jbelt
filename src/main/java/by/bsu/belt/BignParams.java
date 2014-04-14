@@ -19,9 +19,9 @@ public class BignParams extends Structure implements Structure.ByReference {
     public byte[] yG = new byte[64];	/*!< y-координата точки G */
     public byte[] seed = new byte[8];  /*!< параметр seed */
 
-    public BignParams(Bee2Library bee2, int l) {
+    public BignParams(int level) {
         String curve_name = null;
-        switch (l) {
+        switch (level) {
             case 128:
                 curve_name = "1.2.112.0.2.0.34.101.45.3.1"; break;
             case 192:
@@ -29,12 +29,19 @@ public class BignParams extends Structure implements Structure.ByReference {
             case 256:
                 curve_name = "1.2.112.0.2.0.34.101.45.3.3"; break;
             default:
-                throw new IllegalArgumentException("Level " + l + "is invalid");
+                throw new IllegalArgumentException("Level " + level + "is invalid");
         }
 
-        int res = bee2.bignStdParams(this, curve_name);
+        int res = Bee2Library.INSTANCE.bignStdParams(this, curve_name);
         if (res!=0)
             throw new RuntimeException("Params were not loaded, code is " + res);
+
+        assert is_valid(this);
+
+    }
+
+    public static boolean is_valid(BignParams bignParams) {
+        return Bee2Library.INSTANCE.bignValParams(bignParams) == 0;
 
     }
 

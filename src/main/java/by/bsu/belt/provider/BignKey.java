@@ -3,8 +3,11 @@ package by.bsu.belt.provider;
 //import org.bouncycastle.asn1.*;
 //import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 
+import by.bsu.belt.BignParams;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.Key;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -16,6 +19,8 @@ import java.security.PublicKey;
  */
 public abstract class BignKey implements Key{
     public byte[] bytes;
+
+    public BignParams bignParams;
 
     public byte[] getBytes(){
         return bytes;
@@ -54,6 +59,19 @@ public abstract class BignKey implements Key{
         return bytes;
     }
 
+    public BignKey() {
+        super();
+    }
+
+    public BignKey(byte[] bytes) {
+        super();
+        setBytes(bytes);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return new BigInteger(bytes).equals(new BigInteger(((BignKey)obj).bytes));
+    }
 }
 
 
