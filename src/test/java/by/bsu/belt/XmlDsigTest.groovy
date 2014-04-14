@@ -34,6 +34,8 @@ class XmlDsigTest extends TestCase{
     public void test() {
         def doc = CreateBeeSignature.sign(xml_string, 'apache_signed_test.xml')
         assertTrue(VerifySignature.validate(doc))
+
+        System.out.println(CreateBeeSignature.convertToString(doc))
     }
 
 

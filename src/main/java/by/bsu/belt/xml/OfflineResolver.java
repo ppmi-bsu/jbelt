@@ -23,6 +23,7 @@ import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
 import org.w3c.dom.Attr;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,27 +50,31 @@ public class OfflineResolver extends ResourceResolverSpi {
     /** Field _mimeMap */
     static Map<String, String> _mimeMap = null;
 
-    static {
+    public OfflineResolver() {
         org.apache.xml.security.Init.init();
+
+        String path = this.getClass().getResource("/samples").getPath();
+
+        System.out.println("Offline resolver samples path is " + path);
 
         OfflineResolver._uriMap = new HashMap<String, String>();
         OfflineResolver._mimeMap = new HashMap<String, String>();
 
         OfflineResolver.register("http://www.w3.org/TR/xml-stylesheet",
-                                 "src/main/resources/samples/data/org/w3c/www/TR/xml-stylesheet.html",
+                                 "/samples/data/org/w3c/www/TR/xml-stylesheet.html",
                                  "text/html");
         OfflineResolver.register("http://www.w3.org/TR/2000/REC-xml-20001006",
-                                 "src/main/resources/samples/data/org/w3c/www/TR/2000/REC-xml-20001006",
+                "/samples/data/org/w3c/www/TR/2000/REC-xml-20001006",
                                  "text/xml");
         OfflineResolver.register("http://www.nue.et-inf.uni-siegen.de/index.html",
-                                 "src/main/resources/samples/data/org/apache/xml/security/temp/nuehomepage",
+                "/samples/data/org/apache/xml/security/temp/nuehomepage",
                                  "text/html");
         OfflineResolver.register("http://www.nue.et-inf.uni-siegen.de/~geuer-pollmann/id2.xml",
-                                 "src/main/resources/samples/data/org/apache/xml/security/temp/id2.xml", "text/xml");
+                "/samples/data/org/apache/xml/security/temp/id2.xml", "text/xml");
         OfflineResolver.register("http://xmldsig.pothole.com/xml-stylesheet.txt",
-                                 "src/main/resources/samples/data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
+                "/samples/data/com/pothole/xmldsig/xml-stylesheet.txt", "text/xml");
         OfflineResolver.register("http://www.w3.org/Signature/2002/04/xml-stylesheet.b64",
-                                 "src/main/resources/samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", "text/plain");
+                "/samples/data/ie/baltimore/merlin-examples/merlin-xmldsig-twenty-three/xml-stylesheet.b64", "text/plain");
     }
 
     /**
@@ -90,7 +95,7 @@ public class OfflineResolver extends ResourceResolverSpi {
 
                 log.debug("Mapped " + URI + " to " + newURI);
 
-                InputStream is = new FileInputStream(newURI);
+                InputStream is = this.getClass().getResourceAsStream(newURI);//new FileInputStream(newURI);
 
                 log.debug("Available bytes = " + is.available());
 
