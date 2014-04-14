@@ -39,6 +39,12 @@ class BXS {
     }
 
     def verify(def xml) {
-        VerifySignature.validate(xml)
+        try {
+            VerifySignature.validate(xml)
+        }catch (Exception ex) {
+            ex.printStackTrace()
+            false
+        }
+
     }
 }
