@@ -1,5 +1,4 @@
 
 1.Add libbee2.so to ldconfig:
-cat /etc/ld.so.conf.d/bee2.conf 
-/home/mihas/Downloads/belt_export/linux/bin/Release64
-
+	su -c "echo '/home/path/to/bee2/linux/bin/Release64' >  /etc/ld.so.conf.d/bee2.conf"	
+	sudo ldconfig
