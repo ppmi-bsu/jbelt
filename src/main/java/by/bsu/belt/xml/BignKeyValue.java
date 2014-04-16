@@ -71,8 +71,7 @@ public class BignKeyValue extends KeyValue {
             if (key instanceof BignPublicKey) {
                 XMLUtils.addReturnToElement(this.constructionElement);
                 this.addBase64Element(((BignPublicKey) key).bytes, "PublicKey");
-                this.addTextElement("urn:oid:" + BignParams.getCurveName(((BignPublicKey) key).bignParams.l),
-                        "NamedCurve");
+                this.addTextElement(getCurveName(((BignPublicKey) key).bignParams), "NamedCurve");
             }else {
                 throw new IllegalArgumentException();
             }
@@ -120,6 +119,19 @@ public class BignKeyValue extends KeyValue {
             }
 
             return null;
+        }
+    }
+
+    static String getCurveName(BignParams bignParams) {
+        switch (bignParams.l) {
+            case 128:
+                return "urn:oid:1.2.112.0.2.0.34.101.45.3.1-bign-curve256v1";
+            case 192:
+                return "urn:oid:1.2.112.0.2.0.34.101.45.3.2-bign-curve384v1";
+            case 256:
+                return "urn:oid:1.2.112.0.2.0.34.101.45.3.3-bign-curve512v1";
+            default:
+                throw new IllegalArgumentException("Wrong bign params, level is " + bignParams.l);
         }
     }
 
