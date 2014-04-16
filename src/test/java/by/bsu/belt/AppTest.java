@@ -70,7 +70,7 @@ public class AppTest
         Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
         Bee2Library bee2 = Bee2Library.INSTANCE;
         assertNotNull(bee2);
-        int[] levels = { 128};
+        int[] levels = { 128, 192, 256};
         for(int level: levels ) {
             BignParams bignParams = new BignParams(level);
             assertEquals(bignParams.l, level);
@@ -82,7 +82,7 @@ public class AppTest
             assertEquals(bee2.bignGenKeypair(privKey, pubKey, bignParams, rng, null), 0);
             assertEquals(bee2.bignValPubkey(bignParams, pubKey), 0);
 
-            byte[] hash = new byte[32];
+            byte[] hash = new byte[level/4];
             assertEquals(bee2.beltHash(hash, "1234567890", 10), 0);
             System.out.println(Arrays.toString(hash));
 
