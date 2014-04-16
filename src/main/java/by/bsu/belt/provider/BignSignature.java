@@ -24,6 +24,13 @@ public class BignSignature extends Signature {
 
     ArrayList<Byte> data = new ArrayList<Byte>();
 
+
+    private byte[] hash(byte[] data, int len) {
+        byte[] hash = new byte[len];
+        System.arraycopy(new BeltMessageDigest().digest(data), 0, hash, 0, 32);
+        return hash;
+    }
+
     @Override
     public void engineInitVerify(PublicKey publicKey) throws InvalidKeyException {
         this.state = VERIFY;
@@ -54,11 +61,10 @@ public class BignSignature extends Signature {
         byte[] sig = new byte[(privKey.bignParams.l * 3)/8];
 
 
-
         bee2.bignSign(sig,
                 privKey.bignParams,
                 "1.2.112.0.2.0.34.101.31.81",
-                new BeltMessageDigest().digest(Util.bytes(data)),
+                hash(Util.bytes(data), privKey.bignParams.l/4),
                 privKey.bytes, rng, null);
 
         return sig;
@@ -71,7 +77,7 @@ public class BignSignature extends Signature {
 
         int res = bee2.bignVerify(pubKey.bignParams,
                 "1.2.112.0.2.0.34.101.31.81",
-                new BeltMessageDigest().digest(Util.bytes(data)),
+                hash(Util.bytes(data), pubKey.bignParams.l/4),
                 sigBytes,
                 pubKey.bytes);
 
