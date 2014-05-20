@@ -8,6 +8,7 @@ import junit.framework.TestSuite;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Unit test for simple App.
@@ -36,6 +37,21 @@ public class AppTest
     /**
      * Rigourous Test :-)
      */
+    public void testBeltEnc() {
+        Bee2Library bee2 = Bee2Library.INSTANCE;
+
+
+        int message_lenght = new Random().nextInt(50);
+        byte[] encrypted = new byte[message_lenght];
+        byte[] decrypted = new byte[message_lenght];
+        byte[] key = "12345678123456781234567812345678".getBytes();
+        assertEquals(key.length, 32);
+        assertEquals(0, bee2.beltECBEncr(encrypted, "1234567890121234567890121234567890121234567890121".getBytes(), message_lenght, key, 32));
+        System.out.println(Arrays.toString(encrypted));
+        assertEquals(0, bee2.beltECBDecr(decrypted, encrypted, message_lenght, key, 32));
+        System.out.println(Arrays.toString(decrypted));
+    }
+
     public void testKeysBee2() {
         Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
         Bee2Library bee2 = Bee2Library.INSTANCE;

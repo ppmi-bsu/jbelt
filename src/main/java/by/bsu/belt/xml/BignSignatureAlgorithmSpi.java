@@ -13,6 +13,7 @@ import java.security.spec.AlgorithmParameterSpec;
  */
 public class BignSignatureAlgorithmSpi extends SignatureAlgorithmSpi {
 
+    public static String BIGN_URI = "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt";
 
     private Signature signatureAlgorithm = null;
 
@@ -22,7 +23,7 @@ public class BignSignatureAlgorithmSpi extends SignatureAlgorithmSpi {
 
     @Override
     protected String engineGetURI() {
-        return "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt";
+        return BIGN_URI;
     }
 
     @Override

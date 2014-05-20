@@ -62,4 +62,26 @@ public interface Bee2Library extends Library {
             byte[] privkey		/*!< [in] личный ключ */
     );
 
+    int beltECBEncr(byte[] dest, byte[] src, int count,
+                byte[] theta, int len);
+
+    int beltECBDecr(byte[] dest, byte[] src, int count,
+                    byte[] theta, int len);
+
+    int beltKWPWrap(
+            byte[] dest,			/*!< [out] защищенный ключ */
+            byte[] src,		/*!< [in] защищаемый ключ */
+            int count,			/*!< [in] длина src в октетах */
+            byte[] header,	/*!< [in] заголовок ключа */
+            byte theta,	    /*!< [in] ключ защиты */
+            int len);       /*!< [in] длина theta в октетах */
+
+    int beltKWPUnwrap(
+            byte[] dest,			/*!< [out] ключ */
+            byte[] src,		/*!< [in] защищенный ключ */
+            int count,			/*!< [in] длина src в октетах */
+            byte[] header,	/*!< [in] заголовок ключа */
+            byte theta,	    /*!< [in] ключ защиты */
+            int len);       /*!< [in] длина theta в октетах */
+
 }

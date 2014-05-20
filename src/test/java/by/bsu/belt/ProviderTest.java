@@ -8,6 +8,7 @@ import org.bouncycastle.jce.X509Principal;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 
+import javax.crypto.*;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.X509Certificate;
@@ -31,7 +32,24 @@ public class ProviderTest
 
     }
 
-    public void test_belt() throws NoSuchAlgorithmException {
+    public void test_belt_cipher() throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        KeyGenerator keyGen = KeyGenerator.getInstance("Belt");
+        assert keyGen!=null;
+        SecretKey key = keyGen.generateKey();
+        assertEquals(key.getAlgorithm(), "Belt");
+
+        Cipher cipher = Cipher.getInstance("Belt");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] message = "1234567890121234567890121234567890121234567890121".getBytes();
+        byte[] enc = cipher.doFinal(message);
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] dec = cipher.doFinal(enc);
+        assertEquals(Arrays.toString(dec), Arrays.toString(message));
+
+
+    }
+
+    public void test_belt_hash() throws NoSuchAlgorithmException {
 
         MessageDigest md = MessageDigest.getInstance("Belt");
         assertEquals(md.getDigestLength(), 32);
