@@ -16,6 +16,7 @@ public class Bee2SecurityProvider extends Provider {
         put("Signature.BignSign", "by.bsu.belt.provider.BignSignature");
         put("KeyPairGenerator.Bign", "by.bsu.belt.provider.BignKeyPairGenerator");
         put("Cipher.Belt", "by.bsu.belt.provider.BeltCipherSpi");
+        put("Cipher.Bign", "by.bsu.belt.provider.BignCipherSpi");
         put("KeyGenerator.Belt", "by.bsu.belt.provider.BeltKeyGenerator");
 
 

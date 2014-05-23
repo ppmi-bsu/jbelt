@@ -152,8 +152,8 @@ public class Encrypter {
          * Here we are generating a Bign key.
          */
         String algorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-wrap";
+        String encryptionAlgorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
 
-        JCEMapper.register(algorithmURI, new JCEMapper.Algorithm("", "Bign", "KeyTransport"));
         XMLCipher keyCipher =
             XMLCipher.getInstance(algorithmURI);
         keyCipher.init(XMLCipher.WRAP_MODE, pubKey);
@@ -165,10 +165,8 @@ public class Encrypter {
          */
         Element rootElement = document.getDocumentElement();
 
-        algorithmURI = XMLCipher.AES_128;
-
         XMLCipher xmlCipher =
-            XMLCipher.getInstance(algorithmURI);
+            XMLCipher.getInstance(encryptionAlgorithmURI);
         xmlCipher.init(XMLCipher.ENCRYPT_MODE, symmetricKey);
 
         /*

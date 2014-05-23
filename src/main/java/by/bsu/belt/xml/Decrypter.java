@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import java.security.Key;
+import java.security.PrivateKey;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -105,7 +106,7 @@ public class Decrypter {
         );
     }
 
-    public static void main(String unused[]) throws Exception {
+    public static void decrypt(PrivateKey kek) throws Exception {
         Document document = loadEncryptionDocument();
 
         Element encryptedDataElement =
@@ -117,10 +118,6 @@ public class Decrypter {
          * Load the key to be used for decrypting the xml data
          * encryption key.
          */
-        Key kek = loadKeyEncryptionKey();
-
-        String providerName = "BC";
-
         XMLCipher xmlCipher =
             XMLCipher.getInstance();
         /*

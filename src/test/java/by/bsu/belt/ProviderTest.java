@@ -32,6 +32,26 @@ public class ProviderTest
 
     }
 
+    public void test_bign_wrap() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+        BignKeyPairGenerator gen = new BignKeyPairGenerator();
+        int[] levels = {128, 192, 256};
+        for(int level: levels) {
+            gen.initialize(level);
+            KeyPair keys = gen.generateKeyPair();
+
+            KeyGenerator keyGen = KeyGenerator.getInstance("Belt");
+            SecretKey key = keyGen.generateKey();
+
+            Cipher bign = Cipher.getInstance("Bign");
+            bign.init(Cipher.WRAP_MODE, keys.getPublic());
+            byte[] wrapped = bign.wrap(key);
+            bign.init(Cipher.UNWRAP_MODE, keys.getPrivate());
+            Key unwrapped = bign.unwrap(wrapped, "Bign", Cipher.SECRET_KEY);
+            //assertEquals(unwrapped, key);
+
+        }
+    }
+
     public void test_belt_cipher() throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
         KeyGenerator keyGen = KeyGenerator.getInstance("Belt");
         assert keyGen!=null;
