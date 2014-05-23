@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 
 import java.io.OutputStream;
 import java.security.Key;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import javax.crypto.SecretKey;
@@ -36,6 +37,7 @@ import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.utils.Constants;
 
+import org.apache.xml.security.utils.EncryptionConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -50,6 +52,10 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class Encrypter {
 
+    static String KEYTRANSPORT_ALGO_URI = "urn:oid:1.2.112.0.2.0.34.101.45.41-bign-keytransport";
+    static String ENCRYPTION_URI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
+
+
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
@@ -61,11 +67,8 @@ public class Encrypter {
     }
 
     static {
-        String algorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-wrap";
-        String encryptionAlgorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
-
-        JCEMapper.register(algorithmURI, new JCEMapper.Algorithm("", "Bign", "KeyTransport"));
-        JCEMapper.register(encryptionAlgorithmURI, new JCEMapper.Algorithm("", "Belt", "BlockEncryption"));
+        JCEMapper.register(KEYTRANSPORT_ALGO_URI, new JCEMapper.Algorithm("", "Bign", "KeyTransport"));
+        JCEMapper.register(ENCRYPTION_URI, new JCEMapper.Algorithm("", "Belt", "BlockEncryption"));
     }
 
     private static Document createSampleDocument() throws Exception {
@@ -173,11 +176,8 @@ public class Encrypter {
          * Get a key to be used for encrypting the symmetric key.
          * Here we are generating a Bign key.
          */
-        String algorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-wrap";
-        String encryptionAlgorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
-
         XMLCipher keyCipher =
-            XMLCipher.getInstance(algorithmURI);
+            XMLCipher.getInstance(KEYTRANSPORT_ALGO_URI);
         keyCipher.init(XMLCipher.WRAP_MODE, pubKey);
         EncryptedKey encryptedKey =
             keyCipher.encryptKey(document, symmetricKey);
@@ -188,7 +188,7 @@ public class Encrypter {
         Element rootElement = document.getDocumentElement();
 
         XMLCipher xmlCipher =
-            XMLCipher.getInstance(encryptionAlgorithmURI);
+            XMLCipher.getInstance(ENCRYPTION_URI);
         xmlCipher.init(XMLCipher.ENCRYPT_MODE, symmetricKey);
 
         /*
@@ -213,6 +213,35 @@ public class Encrypter {
          * a file.
          */
         //outputDocToFile(document, "build/encryptedInfo.xml");
+        return document;
+    }
+
+    public static Document decrypt(PrivateKey kek, Document document) throws Exception {
+
+        Element encryptedDataElement =
+                (Element) document.getElementsByTagNameNS(
+                        EncryptionConstants.EncryptionSpecNS,
+                        EncryptionConstants._TAG_ENCRYPTEDDATA).item(0);
+
+        /*
+         * Load the key to be used for decrypting the xml data
+         * encryption key.
+         */
+        XMLCipher xmlCipher =
+                XMLCipher.getInstance();
+        /*
+         * The key to be used for decrypting xml data would be obtained
+         * from the keyinfo of the EncrypteData using the kek.
+         */
+        xmlCipher.init(XMLCipher.DECRYPT_MODE, null);
+        xmlCipher.setKEK(kek);
+        /*
+         * The following doFinal call replaces the encrypted data with
+         * decrypted contents in the document.
+         */
+        xmlCipher.doFinal(document, encryptedDataElement);
+
+        //outputDocToFile(document, "build/decryptedInfo.xml");
         return document;
     }
 }

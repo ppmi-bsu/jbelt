@@ -54,6 +54,6 @@ class BXS {
     }
 
     def dec(def xml, def privKey) {
-        Encrypter.transform(Decrypter.decrypt(new BignPrivateKey(privKey), toDoc(xml)))
+        Encrypter.transform(Encrypter.decrypt(new BignPrivateKey(privKey), toDoc(xml)))
     }
 }
