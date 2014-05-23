@@ -50,10 +50,10 @@ class BXS {
     }
 
     def enc(def xml, def pubKey) {
-        CreateBeeSignature.convertToString(Encrypter.encrypt(new BignPublicKey(pubKey), toDoc(xml)))
+        Encrypter.transform(Encrypter.encrypt(new BignPublicKey(pubKey), toDoc(xml)))
     }
 
     def dec(def xml, def privKey) {
-        CreateBeeSignature.convertToString(Decrypter.decrypt(new BignPrivateKey(privKey), toDoc(xml)))
+        Encrypter.transform(Decrypter.decrypt(new BignPrivateKey(privKey), toDoc(xml)))
     }
 }

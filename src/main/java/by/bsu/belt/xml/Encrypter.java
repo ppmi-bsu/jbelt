@@ -18,9 +18,11 @@
  */
 package by.bsu.belt.xml;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import java.io.OutputStream;
 import java.security.Key;
 import java.security.PublicKey;
 
@@ -37,11 +39,9 @@ import org.apache.xml.security.utils.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.OutputKeys;
 
 /**
  * This sample demonstrates how to encrypt data inside an xml document.
@@ -57,6 +57,15 @@ public class Encrypter {
 
     static {
         org.apache.xml.security.Init.init();
+
+    }
+
+    static {
+        String algorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-wrap";
+        String encryptionAlgorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
+
+        JCEMapper.register(algorithmURI, new JCEMapper.Algorithm("", "Bign", "KeyTransport"));
+        JCEMapper.register(encryptionAlgorithmURI, new JCEMapper.Algorithm("", "Belt", "BlockEncryption"));
     }
 
     private static Document createSampleDocument() throws Exception {
@@ -118,6 +127,18 @@ public class Encrypter {
             KeyGenerator.getInstance("Belt");
         //keyGenerator.init(128);
         return keyGenerator.generateKey();
+
+    }
+
+    public static String transform(Document doc) throws TransformerException {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer = factory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        DOMSource source = new DOMSource(doc);
+        OutputStream stream = new ByteArrayOutputStream();
+        StreamResult result = new StreamResult(stream);
+        transformer.transform(source, result);
+        return result.getOutputStream().toString();
     }
 
     private static void outputDocToFile(Document doc, String fileName) throws Exception {

@@ -28,6 +28,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 
+import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.EncryptionConstants;
@@ -56,6 +57,15 @@ public class Decrypter {
     static {
         org.apache.xml.security.Init.init();
     }
+
+    static {
+        String algorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-wrap";
+        String encryptionAlgorithmURI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
+
+        JCEMapper.register(algorithmURI, new JCEMapper.Algorithm("", "Bign", "KeyTransport"));
+        JCEMapper.register(encryptionAlgorithmURI, new JCEMapper.Algorithm("", "Belt", "BlockEncryption"));
+    }
+
 
     private static Document loadEncryptionDocument() throws Exception {
         String fileName = "build/encryptedInfo.xml";
