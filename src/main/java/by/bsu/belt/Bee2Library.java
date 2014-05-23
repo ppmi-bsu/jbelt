@@ -68,20 +68,22 @@ public interface Bee2Library extends Library {
     int beltECBDecr(byte[] dest, byte[] src, int count,
                     byte[] theta, int len);
 
-    int beltKWPWrap(
-            byte[] dest,			/*!< [out] защищенный ключ */
-            byte[] src,		/*!< [in] защищаемый ключ */
-            int count,			/*!< [in] длина src в октетах */
-            byte[] header,	/*!< [in] заголовок ключа */
-            byte theta,	    /*!< [in] ключ защиты */
-            int len);       /*!< [in] длина theta в октетах */
+    int bignKeyWrap(
+            byte[] token,					/*!< [out] токен ключа */
+            BignParams params,		/*!< [in] долговременные параметры */
+            byte[] key,				/*!< [in] транспортируемый ключ */
+            int len,						/*!< [in] длина ключа в октетах */
+            byte[] header,			/*!< [in] заголовок ключа [16]*/
+            byte[] pubkey,			/*!< [in] открытый ключ получателя */
+            IRngFunction rng,						/*!< [in] генератор случайных чисел */
+            Pointer rng_state					/*!< [in/out] состояние генератора */
+    );
 
-    int beltKWPUnwrap(
-            byte[] dest,			/*!< [out] ключ */
-            byte[] src,		/*!< [in] защищенный ключ */
-            int count,			/*!< [in] длина src в октетах */
-            byte[] header,	/*!< [in] заголовок ключа */
-            byte theta,	    /*!< [in] ключ защиты */
-            int len);       /*!< [in] длина theta в октетах */
-
+    int bignKeyUnwrap(
+            byte[] key,						/*!< [out] ключ */
+            BignParams params,		/*!< [in] долговременные параметры */
+            byte[] token,				/*!< [in] токен ключа */
+            int len,						/*!< [in] длина токена в октетах */
+            byte[] header,			/*!< [in] заголовок ключа [16]*/
+            byte[] privkey);			/*!< [in] личный ключ получателя */
 }

@@ -34,6 +34,28 @@ public class AppTest
         return new TestSuite( AppTest.class );
     }
 
+    public void testWrap() {
+
+        Bee2Library bee2 = Bee2Library.INSTANCE;
+        Bee2Library.RngFunc rng = new Bee2Library.RngFunc();
+
+        int level = 128;
+        BignParams bignParams = new BignParams(level);
+
+        byte[] symkey = "12345678123456781234567812345678".getBytes();
+        byte[] privKey = new byte[level/4];
+        byte[] pubKey = new byte[level/2];
+
+        assertEquals(bee2.bignGenKeypair(privKey, pubKey, bignParams, rng, null), 0);
+
+        byte[] wrapped = new byte[80];
+
+        byte[] unwrapped = new byte[32];
+        assertEquals(0, bee2.bignKeyWrap(wrapped, bignParams, symkey, 32, "1234567890123456".getBytes(), pubKey, rng, null));
+        assertEquals(0, bee2.bignKeyUnwrap(unwrapped, bignParams, wrapped, 80, "1234567890123456".getBytes(), privKey));
+        assertEquals(new String(symkey), new String(unwrapped));
+    }
+
     /**
      * Rigourous Test :-)
      */

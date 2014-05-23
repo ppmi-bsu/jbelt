@@ -22,6 +22,7 @@ class EncryptionTest extends GroovyTestCase{
         keyPairGenerator.initialize(128);
         KeyPair keys = keyPairGenerator.generateKeyPair();
 
+
         Encrypter.encrypt(keys.getPublic())
         Decrypter.main()
     }
