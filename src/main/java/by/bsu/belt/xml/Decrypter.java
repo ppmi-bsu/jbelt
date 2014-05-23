@@ -106,8 +106,9 @@ public class Decrypter {
         );
     }
 
-    public static void decrypt(PrivateKey kek) throws Exception {
-        Document document = loadEncryptionDocument();
+    public static Document decrypt(PrivateKey kek, Document document) throws Exception {
+        if (document==null)
+            document = loadEncryptionDocument();
 
         Element encryptedDataElement =
             (Element) document.getElementsByTagNameNS(
@@ -133,5 +134,6 @@ public class Decrypter {
         xmlCipher.doFinal(document, encryptedDataElement);
 
         outputDocToFile(document, "build/decryptedInfo.xml");
+        return document;
     }
 }

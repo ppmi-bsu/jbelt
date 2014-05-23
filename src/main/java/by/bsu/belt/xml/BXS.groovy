@@ -1,6 +1,8 @@
 package by.bsu.belt.xml
 
 import by.bsu.belt.provider.BignKeyPairGenerator
+import by.bsu.belt.provider.BignPrivateKey
+import by.bsu.belt.provider.BignPublicKey
 import org.w3c.dom.Document
 import org.xml.sax.InputSource
 
@@ -45,6 +47,13 @@ class BXS {
             ex.printStackTrace()
             false
         }
+    }
 
+    def enc(def xml, def pubKey) {
+        CreateBeeSignature.convertToString(Encrypter.encrypt(new BignPublicKey(pubKey), toDoc(xml)))
+    }
+
+    def dec(def xml, def privKey) {
+        CreateBeeSignature.convertToString(Decrypter.decrypt(new BignPrivateKey(privKey), toDoc(xml)))
     }
 }

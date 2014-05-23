@@ -31,8 +31,8 @@ class EncryptionTest extends GroovyTestCase{
 
 
 
-        Encrypter.encrypt(keys.getPublic())
-        Decrypter.decrypt(keys.getPrivate())
+        Encrypter.encrypt(keys.getPublic(), null)
+        Decrypter.decrypt(keys.getPrivate(), null)
     }
 
 }

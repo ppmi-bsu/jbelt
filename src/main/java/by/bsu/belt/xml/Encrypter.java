@@ -137,9 +137,10 @@ public class Encrypter {
         );
     }
 
-    public static void encrypt(PublicKey pubKey) throws Exception {
+    public static Document encrypt(PublicKey pubKey, Document document) throws Exception {
 
-        Document document = createSampleDocument();
+        if (document==null)
+            document = createSampleDocument();
 
         /*
          * Get a key to be used for encrypting the element.
@@ -191,5 +192,6 @@ public class Encrypter {
          * a file.
          */
         outputDocToFile(document, "build/encryptedInfo.xml");
+        return document;
     }
 }
