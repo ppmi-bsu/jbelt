@@ -143,7 +143,7 @@ public class Decrypter {
          */
         xmlCipher.doFinal(document, encryptedDataElement);
 
-        outputDocToFile(document, "build/decryptedInfo.xml");
+        //outputDocToFile(document, "build/decryptedInfo.xml");
         return document;
     }
 }

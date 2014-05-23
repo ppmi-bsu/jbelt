@@ -39,17 +39,6 @@ class EncryptionTest extends GroovyTestCase{
 '''
 
 
-    public void test() {
-        Security.addProvider(new Bee2SecurityProvider());
-
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("Bign");
-        keyPairGenerator.initialize(128);
-        KeyPair keys = keyPairGenerator.generateKeyPair();
-
-        Encrypter.encrypt(keys.getPublic(), null)
-        Decrypter.decrypt(keys.getPrivate(), null)
-    }
-
     public void testBXS() {
         Security.addProvider(new Bee2SecurityProvider());
 

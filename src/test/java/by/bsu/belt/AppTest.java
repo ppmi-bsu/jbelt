@@ -1,7 +1,5 @@
 package by.bsu.belt;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

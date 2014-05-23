@@ -212,7 +212,7 @@ public class Encrypter {
          * Output the document containing the encrypted information into
          * a file.
          */
-        outputDocToFile(document, "build/encryptedInfo.xml");
+        //outputDocToFile(document, "build/encryptedInfo.xml");
         return document;
     }
 }
