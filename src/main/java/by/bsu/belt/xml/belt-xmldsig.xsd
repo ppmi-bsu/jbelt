@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <xs:schema targetNamespace="http://www.bign"
+             xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:bign="http://www.bign"
+             elementFormDefault="qualified"
+             attributeFormDefault="unqualified" version="0.3">
+
+    <!-- Элемент BignKeyValue является дочернім элементом xs:KeyValue-->
+
+    <xs:element name="BignKeyValue" type="bign:KeyValueType"/>
+    <xs:complexType name="KeyValueType">
+        <xs:sequence>
+            <xs:element name="DomainParameters"
+                        type="bign:DomainParamsType" minOccurs="0"/> <!-- Необязателен, если параметры понятны из контекста -->
+            <xs:element name="PublicKey" type="xs:base64Binary"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <!--Параметры эллиптической кривой-->
+
+    <xs:complexType name="DomainParamsType">
+        <xs:choice>
+            <xs:element name="ExplicitParams" type="bign:ExplicitParamsType"/>
+            <xs:element name="NamedCurve">
+                <xs:complexType>
+                    <xs:attribute name="URN" type="xs:anyURI" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+
+
+    <xs:complexType name="FieldParamsType">
+        <xs:sequence>
+            <xs:element name="P" type="xs:positiveInteger"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="ExplicitParamsType">
+        <xs:sequence>
+            <xs:element name="FieldParams" type="bign:FieldParamsType"/>
+            <xs:element name="CurveParams" type="bign:CurveParamsType"/>
+            <xs:element name="BasePoint" type="xs:base64Binary"/>
+            <xs:element name="Order" type="xs:positiveInteger"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CurveParamsType">
+        <xs:sequence>
+            <xs:element name="A" type="xs:base64Binary"/>
+            <xs:element name="B" type="xs:base64Binary"/>
+            <xs:element name="Seed" type="xs:base64Binary" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    </xs:schema>
