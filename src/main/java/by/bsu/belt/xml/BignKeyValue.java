@@ -42,7 +42,7 @@ public class BignKeyValue extends KeyValue {
         super(doc, pk);
 
         if (pk instanceof BignKey) {
-            XMLUtils.setDsPrefix("bign");
+            XMLUtils.setDsPrefix(NAMESPACE_PREFIX);
             try {
                 BignKeyValueContent bign = new BignKeyValueContent(this.doc, pk);
                 this.constructionElement.appendChild(bign.getElement());
@@ -92,9 +92,15 @@ public class BignKeyValue extends KeyValue {
                 XMLUtils.addReturnToElement(this.constructionElement);
 
 
-                    this.addBase64Element(((BignPublicKey) key).bytes, "PublicKey");
-                    this.addTextElement(getCurveName(((BignPublicKey) key).bignParams), NAMED_CURVE_TAG);
+                this.addBase64Element(((BignPublicKey) key).bytes, "PublicKey");
+                Element domainParams = this.doc.createElementNS(Identifiers.BIGN_NAMESPACE_URI, DOMAIN_PARAMS_TAG);
+                this.constructionElement.appendChild(domainParams);
+                Element namedCurve = this.doc.createElementNS(Identifiers.BIGN_NAMESPACE_URI, NAMED_CURVE_TAG);
+                domainParams.appendChild(namedCurve);
 
+                Text t = this.doc.createTextNode(getCurveName(((BignPublicKey) key).bignParams));
+                namedCurve.appendChild(t);
+                XMLUtils.addReturnToElement(this.constructionElement);
 
             }else {
                 throw new IllegalArgumentException();
@@ -145,11 +151,11 @@ public class BignKeyValue extends KeyValue {
     static String getCurveName(BignParams bignParams) {
         switch (bignParams.l) {
             case 128:
-                return "urn:oid:1.2.112.0.2.0.34.101.45.3.1-bign-curve256v1";
+                return Identifiers.NAMED_CURVE_256;
             case 192:
-                return "urn:oid:1.2.112.0.2.0.34.101.45.3.2-bign-curve384v1";
+                return Identifiers.NAMED_CURVE_384;
             case 256:
-                return "urn:oid:1.2.112.0.2.0.34.101.45.3.3-bign-curve512v1";
+                return Identifiers.NAMED_CURVE_512;
             default:
                 throw new IllegalArgumentException("Wrong bign params, level is " + bignParams.l);
         }

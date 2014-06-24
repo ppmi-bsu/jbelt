@@ -68,16 +68,16 @@ public class CreateBeeSignature {
 
 
         JCEMapper.register(
-                "urn:oid:1.2.112.0.2.0.34.101.31.81-belt",
+                Identifiers.BELT_MD_URI,
                 new JCEMapper.Algorithm("", "Belt", "MessageDigest")
         );
         JCEMapper.register(
-                "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt",
+                Identifiers.BIGN_SIGNATURE_METHOD_URI,
                 new JCEMapper.Algorithm("", "BignSign", "Signature")
         );
 
         try {
-            SignatureAlgorithm.register("urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt", BignSignatureAlgorithmSpi.class);
+            SignatureAlgorithm.register(Identifiers.BIGN_SIGNATURE_METHOD_URI, BignSignatureAlgorithmSpi.class);
         } catch (AlgorithmAlreadyRegisteredException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ClassNotFoundException e) {
@@ -119,7 +119,7 @@ public class CreateBeeSignature {
         //Create an XML Signature object from the document, BaseURI and
         //signature algorithm (in this case DSA)
         XMLSignature sig =
-                new XMLSignature(doc, BaseURI, "urn:oid:1.2.112.0.2.0.34.101.45.12-bign-with-hbelt");
+                new XMLSignature(doc, BaseURI, Identifiers.BIGN_SIGNATURE_METHOD_URI);
         sig.addResourceResolver(new OfflineResolver());
 
 
@@ -147,7 +147,7 @@ public class CreateBeeSignature {
             //Add the above Document/Reference
 
 
-            sig.addDocument("", transforms, "urn:oid:1.2.112.0.2.0.34.101.31.81-belt");
+            sig.addDocument("", transforms, Identifiers.BELT_MD_URI);
         }
 
         {
