@@ -9,11 +9,13 @@ import org.apache.xml.security.keys.content.keyvalues.KeyValueContent;
 import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
+import org.apache.xml.security.utils.Base64;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.SignatureElementProxy;
 import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 import java.security.Key;
 import java.security.PublicKey;
@@ -26,7 +28,11 @@ import java.security.PublicKey;
 
 public class BignKeyValue extends KeyValue {
 
+    public final static String NAMESPACE_PREFIX = "bign";
+
     public final static String BIGN_KEY_VALUE_TAG = "BignKeyValue";
+    public final static String DOMAIN_PARAMS_TAG = "DomainParameters";
+    public final static String NAMED_CURVE_TAG = "NamedCurve";
 
     public BignKeyValue(Document doc, Element unknownKeyValue) {
         super(doc, unknownKeyValue);    //To change body of overridden methods use File | Settings | File Templates.
@@ -36,9 +42,15 @@ public class BignKeyValue extends KeyValue {
         super(doc, pk);
 
         if (pk instanceof BignKey) {
-            BignKeyValueContent bign = new BignKeyValueContent(this.doc, pk);
-            this.constructionElement.appendChild(bign.getElement());
-            XMLUtils.addReturnToElement(this.constructionElement);
+            XMLUtils.setDsPrefix("bign");
+            try {
+                BignKeyValueContent bign = new BignKeyValueContent(this.doc, pk);
+                this.constructionElement.appendChild(bign.getElement());
+                XMLUtils.addReturnToElement(this.constructionElement);
+            }finally {
+                XMLUtils.setDsPrefix("ds");
+            }
+
         }
 
     }
@@ -48,10 +60,16 @@ public class BignKeyValue extends KeyValue {
     }
 
     public static class BignKeyValueContent extends SignatureElementProxy implements KeyValueContent {
+
+        @Override
+        public String getBaseNamespace() {
+            return Identifiers.BIGN_NAMESPACE_URI;
+        }
+
         @Override
         public String getBaseLocalName() {
 
-            return BignKeyValue.BIGN_KEY_VALUE_TAG;
+            return  BignKeyValue.BIGN_KEY_VALUE_TAG;
         }
 
         public BignKeyValueContent(Element element, String BaseURI) throws XMLSecurityException {
@@ -60,18 +78,24 @@ public class BignKeyValue extends KeyValue {
 
         public PublicKey getPublicKey() throws XMLSecurityException {
             BignPublicKey key = new BignPublicKey();
-            key.setBytes(this.getBytesFromChildElement("PublicKey", "http://www.w3.org/2000/09/xmldsig#"));
+            key.setBytes(this.getBytesFromChildElement("PublicKey", Identifiers.BIGN_NAMESPACE_URI));
             return key;
         }
 
         public BignKeyValueContent(Document doc, Key key) throws IllegalArgumentException {
 
+
+
             super(doc);
 
             if (key instanceof BignPublicKey) {
                 XMLUtils.addReturnToElement(this.constructionElement);
-                this.addBase64Element(((BignPublicKey) key).bytes, "PublicKey");
-                this.addTextElement(getCurveName(((BignPublicKey) key).bignParams), "NamedCurve");
+
+
+                    this.addBase64Element(((BignPublicKey) key).bytes, "PublicKey");
+                    this.addTextElement(getCurveName(((BignPublicKey) key).bignParams), NAMED_CURVE_TAG);
+
+
             }else {
                 throw new IllegalArgumentException();
             }
@@ -95,11 +119,7 @@ public class BignKeyValue extends KeyValue {
                     XMLUtils.elementIsInSignatureSpace(element, Constants._TAG_KEYVALUE);
             if (isKeyValue) {
                 bignKeyElement =
-                        XMLUtils.selectDsNode(element.getFirstChild(), BIGN_KEY_VALUE_TAG, 0);
-            } else if (XMLUtils.elementIsInSignatureSpace(element, BIGN_KEY_VALUE_TAG)) {
-                // this trick is needed to allow the RetrievalMethodResolver to eat a
-                // ds:DSAKeyValue directly (without KeyValue)
-                bignKeyElement = element;
+                        XMLUtils.selectNode(element.getFirstChild(), Identifiers.BIGN_NAMESPACE_URI, BIGN_KEY_VALUE_TAG, 0);
             }
 
             if (bignKeyElement == null) {

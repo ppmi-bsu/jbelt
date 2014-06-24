@@ -30,7 +30,7 @@ class BXS {
     }
 
     def sign(def xml, def keys) {
-        CreateBeeSignature.convertToString(
+        Util.toStr(
                 CreateBeeSignature.sign(toDoc(xml), 'last.xml', keys))
     }
 

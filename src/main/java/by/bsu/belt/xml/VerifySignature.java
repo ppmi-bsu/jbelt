@@ -36,6 +36,7 @@ import java.io.*;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
+
 /**
  * @author $Author: coheigea $
  */
@@ -44,7 +45,6 @@ public class VerifySignature {
     static {
         org.apache.xml.security.Init.init();
         KeyResolver.register(new BignKeyValue.BignKeyValueResolver(), true);
-
     }
 
     public static void validate_file(String signatureFileName) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException, XMLSecurityException {
@@ -113,35 +113,7 @@ public class VerifySignature {
 
     public static boolean validate(String xml) throws XPathExpressionException, XMLSecurityException, IOException, ParserConfigurationException, SAXException {
 
-
-        boolean schemaValidate = false;
-
-        javax.xml.parsers.DocumentBuilderFactory dbf =
-                javax.xml.parsers.DocumentBuilderFactory.newInstance();
-
-        if (schemaValidate) {
-            System.out.println("We do schema-validation");
-        }
-
-        if (schemaValidate) {
-            dbf.setAttribute("http://apache.org/xml/features/validation/schema",
-                    Boolean.TRUE);
-            dbf.setAttribute("http://apache.org/xml/features/dom/defer-node-expansion",
-                    Boolean.TRUE);
-            dbf.setValidating(true);
-            dbf.setAttribute("http://xml.org/sax/features/validation",
-                    Boolean.TRUE);
-        }
-
-        dbf.setNamespaceAware(true);
-        dbf.setAttribute("http://xml.org/sax/features/namespaces", Boolean.TRUE);
-
-        javax.xml.parsers.DocumentBuilder db = dbf.newDocumentBuilder();
-
-        InputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-        Document doc = db.parse(stream);
-
-        return validate(doc);
+        return validate((Document) Util.toDoc(xml));
 
     }
 

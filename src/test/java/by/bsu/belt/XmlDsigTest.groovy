@@ -3,6 +3,7 @@ package by.bsu.belt
 import by.bsu.belt.provider.BignKeyPairGenerator
 import by.bsu.belt.xml.BXS
 import by.bsu.belt.xml.CreateBeeSignature
+import by.bsu.belt.xml.Util
 import by.bsu.belt.xml.VerifySignature
 import junit.framework.TestCase
 
@@ -104,11 +105,11 @@ class XmlDsigTest extends TestCase{
         def doc = CreateBeeSignature.sign(xml_string, 'apache_signed_test.xml')
         assertTrue(VerifySignature.validate(doc))
 
-        System.out.println(CreateBeeSignature.convertToString(doc))
+        System.out.println(Util.toStr(doc))
     }
 
     public void test_strings() {
-        def xml = CreateBeeSignature.convertToString(CreateBeeSignature.sign(test_xml, 'apache_signed_test.xml'))
+        def xml = Util.toStr(CreateBeeSignature.sign(test_xml, 'apache_signed_test.xml'))
         System.out.println(xml)
 
         assertTrue(VerifySignature.validate(xml))

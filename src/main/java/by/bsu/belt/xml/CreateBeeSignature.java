@@ -27,6 +27,7 @@ import org.apache.xml.security.signature.XMLSignatureException;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.XMLUtils;
+import org.python.apache.xerces.dom.DeferredDocumentImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
@@ -109,6 +110,8 @@ public class CreateBeeSignature {
 
     public static Document sign(Document doc, String output, KeyPair keys) throws Exception{
 
+        doc.getDocumentElement().setAttributeNS(Constants.NamespaceSpecNS, "xmlns:bign", Identifiers.BIGN_NAMESPACE_URI);
+
         File signatureFile = new File(output);
 
         //The BaseURI is the URI that's used to prepend to relative URIs
@@ -181,6 +184,8 @@ public class CreateBeeSignature {
         f.close();
         System.out.println("Wrote signature to " + BaseURI);
 
+        doc = (Document) Util.toDoc(Util.toStr(doc));
+
         return doc;
 
     }
@@ -219,12 +224,5 @@ public class CreateBeeSignature {
 
 
 
-    }
-
-    public static String convertToString(Document doc) throws TransformerException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        XMLUtils.outputDOMc14nWithComments(doc, stream);
-
-        return stream.toString();
     }
 }
