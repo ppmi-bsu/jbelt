@@ -16,5 +16,9 @@ public class Identifiers {
     public static String NAMED_CURVE_512 = "http://www.w3.org/2001/04/xmldsig-more#bign-curve512v1";
 
 
+    static String KEYTRANSPORT_ALGO_URI = "http://www.w3.org/2009/xmlenc11#bign-keytransport";
+    static String ENCRYPTION_URI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
+
+
 
 }

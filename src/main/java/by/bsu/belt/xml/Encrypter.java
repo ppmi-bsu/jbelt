@@ -52,10 +52,6 @@ import javax.xml.transform.stream.StreamResult;
  */
 public class Encrypter {
 
-    static String KEYTRANSPORT_ALGO_URI = "urn:oid:1.2.112.0.2.0.34.101.45.41-bign-keytransport";
-    static String ENCRYPTION_URI = "urn:oid:1.2.112.0.2.0.34.101.45.12-belt-enc";
-
-
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
@@ -67,8 +63,8 @@ public class Encrypter {
     }
 
     static {
-        JCEMapper.register(KEYTRANSPORT_ALGO_URI, new JCEMapper.Algorithm("", "Bign", "KeyTransport"));
-        JCEMapper.register(ENCRYPTION_URI, new JCEMapper.Algorithm("", "Belt", "BlockEncryption"));
+        JCEMapper.register(Identifiers.KEYTRANSPORT_ALGO_URI, new JCEMapper.Algorithm("", "Bign", "KeyTransport"));
+        JCEMapper.register(Identifiers.ENCRYPTION_URI, new JCEMapper.Algorithm("", "Belt", "BlockEncryption"));
     }
 
     private static Document createSampleDocument() throws Exception {
@@ -177,7 +173,7 @@ public class Encrypter {
          * Here we are generating a Bign key.
          */
         XMLCipher keyCipher =
-            XMLCipher.getInstance(KEYTRANSPORT_ALGO_URI);
+            XMLCipher.getInstance(Identifiers.KEYTRANSPORT_ALGO_URI);
         keyCipher.init(XMLCipher.WRAP_MODE, pubKey);
         EncryptedKey encryptedKey =
             keyCipher.encryptKey(document, symmetricKey);
@@ -188,7 +184,7 @@ public class Encrypter {
         Element rootElement = document.getDocumentElement();
 
         XMLCipher xmlCipher =
-            XMLCipher.getInstance(ENCRYPTION_URI);
+            XMLCipher.getInstance(Identifiers.ENCRYPTION_URI);
         xmlCipher.init(XMLCipher.ENCRYPT_MODE, symmetricKey);
 
         /*

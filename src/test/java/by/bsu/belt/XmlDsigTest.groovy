@@ -91,10 +91,9 @@ class XmlDsigTest extends TestCase{
          <Buyer id="8492340">
           <Name>My Name</Name>
         <Address>
-        <Street>One Network Drive</Street>
-           <Town>Burlington</Town>
-        <State>MA</State>
-           <Country>United States</Country>
+        <Street> Nezalezhnasti </Street>
+           <City>Minsk</City>
+           <Country>Belarus</Country>
         <PostalCode>01803</PostalCode>
           </Address>
         </Buyer>
@@ -109,10 +108,11 @@ class XmlDsigTest extends TestCase{
     }
 
     public void test_strings() {
-        def xml = Util.toStr(CreateBeeSignature.sign(test_xml, 'apache_signed_test.xml'))
-        System.out.println(xml)
-
-        assertTrue(VerifySignature.validate(xml))
+        for (str in [test_xml, xml_string]) {
+            def xml = Util.toStr(CreateBeeSignature.sign(test_xml, 'apache_signed_test.xml'))
+            System.out.println(xml)
+            assertTrue(VerifySignature.validate(xml))
+        }
 
     }
 
