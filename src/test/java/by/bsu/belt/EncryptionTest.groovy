@@ -2,8 +2,6 @@ package by.bsu.belt
 
 import by.bsu.belt.provider.Bee2SecurityProvider
 import by.bsu.belt.xml.BXS
-import by.bsu.belt.xml.Decrypter
-import by.bsu.belt.xml.Encrypter
 import org.apache.xml.security.algorithms.JCEMapper
 
 import java.security.KeyPair

@@ -35,6 +35,8 @@ import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import by.bsu.belt.xml.DSNamespaceContext;
+import by.bsu.belt.xml.Util;
 
 
 /**
@@ -127,7 +129,7 @@ public class VerifySignature {
         Element sigElement =
             (Element) xpath.evaluate(expression, doc, XPathConstants.NODE);
         XMLSignature signature =
-            new XMLSignature(sigElement, "");
+           new XMLSignature(sigElement, "");
 
         signature.addResourceResolver(new OfflineResolver());
 

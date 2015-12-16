@@ -26,6 +26,9 @@ public class BeltKeyGenerator extends KeyGeneratorSpi {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public BeltKeyGenerator() {
+    }
+
     @Override
     protected void engineInit(int i, SecureRandom secureRandom) {
         //To change body of implemented methods use File | Settings | File Templates.
